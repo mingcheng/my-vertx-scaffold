@@ -55,9 +55,9 @@ java -jar build/libs/my-vertx-scaffold-1.0.0-SNAPSHOT.jar  \
 
 ### 测试
 
-测试框架选型使用了 Spock，它是个基于 Goovy 的优雅的测试框架。
+测试框架选型使用了 [Spock](http://spockframework.org/)，它是个基于 Goovy 的优雅的测试框架。由于 Vert.x 每个 Verticle 想对独立的特性，因此测试很方便。
 
-待完善
+在 `DeployVerticleSpec.groovy` 可以看到如何使用 Spock 进行 Vert.x 部署以及下线 Verticle 的测试。
 
 ## 思考思路
 
