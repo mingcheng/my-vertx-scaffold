@@ -1,0 +1,21 @@
+// @see https://developers.google.com/protocol-buffers/
+syntax = "proto3";
+
+option java_multiple_files = true;
+
+package com.gracecode.scaffold;
+
+service GreetingService {
+    rpc greet (Person) returns (Greet) {
+
+    }
+}
+
+message Person {
+    string name = 1;
+    int32 age = 2;
+}
+
+message Greet {
+    string message = 1;
+}
