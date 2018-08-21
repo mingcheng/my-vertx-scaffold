@@ -1,0 +1,15 @@
+sequenceDiagram
+    participant CV as Consumer
+    participant SV as Server
+    participant CO as Consul Cluster
+
+    SV ->> SV: Initial RPC Server
+    SV ->> CO: Register RPC Address and Port
+
+    CV ->> CO: Get RPC Configure
+    CO --x CV: Return RPC Configure
+
+    CV ->> SV: Mark RPC Request
+    SV -->> CV: Return RPC Result
+
+    SV --x CO: Deregister RPC Server

@@ -81,13 +81,16 @@ public class ServerVerticle extends BaseVerticle {
         super.stop(stopFuture);
 
         if (!rpcServer.isShutdown()) {
+            logger.info("Shutting down rpc service.");
             rpcServer.shutdown(result -> {
                 if (result.succeeded()) {
+                    logger.info("Deregistering rpc service from Consul.");
                     consulClient.deregisterService(RPC_SERVER_NAME, v -> {
                         // do nothing.
                     });
                 }
 
+                logger.info("Close Consul server connect.");
                 consulClient.close();
             });
         }

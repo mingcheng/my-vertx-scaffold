@@ -1,0 +1,13 @@
+{
+  "debug": true,
+  "services": {
+    "greeting": {
+      "host": "127.0.0.1",
+      "port": 10110
+    },
+    "consul": {
+      "host": "127.0.0.1",
+      "port": 8500
+    }
+  }
+}
