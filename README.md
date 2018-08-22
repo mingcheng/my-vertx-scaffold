@@ -1,5 +1,7 @@
 # 基于 Vert.x 的简单脚手架
 
+[![Build Status](https://travis-ci.org/feelinglucky/my-vertx-scaffold.java.svg?branch=master)](https://travis-ci.org/feelinglucky/my-vertx-scaffold.java)
+
 在搭建微服务的过程中，免不了会使用多个技术栈融合以及选型，这是个比较漫长的过程。架构应该更关注于业务的本身，同时又没有时间去关注过多的技术细节，所以就会有脚手架这东西。
 
 其实可能您也第一反应，在这种情况下会使用 [Spring Boot](https://spring.io/projects/spring-boot) ，它是个非常流行的框架，同时作为架构的 Startup 也是个非常不错的开始。
