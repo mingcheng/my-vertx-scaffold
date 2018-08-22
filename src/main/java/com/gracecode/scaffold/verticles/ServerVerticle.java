@@ -3,12 +3,14 @@ package com.gracecode.scaffold.verticles;
 import com.gracecode.scaffold.Greet;
 import com.gracecode.scaffold.GreetingServiceGrpc;
 import com.gracecode.scaffold.Person;
+import io.reactivex.Single;
 import io.vertx.core.Context;
 import io.vertx.core.Future;
 import io.vertx.core.Vertx;
 import io.vertx.ext.consul.ServiceOptions;
 import io.vertx.grpc.VertxServer;
 import io.vertx.grpc.VertxServerBuilder;
+import io.vertx.reactivex.core.impl.AsyncResultSingle;
 
 public class ServerVerticle extends BaseVerticle {
     /**
@@ -38,41 +40,33 @@ public class ServerVerticle extends BaseVerticle {
             logger.info("Initialize ServerVerticle with debug mode.");
         }
 
-
         if (isDebugMode()) {
             logger.info(String.format("Consul Configure with %s:%d", getConsulHost(), getConsulPort()));
         }
-
-
     }
 
     @Override
     public void start(Future<Void> startFuture) throws Exception {
         super.start(startFuture);
-
         rpcServer = VertxServerBuilder.forAddress(getVertx(), getGrpcHost(), getGrpcPort())
                 .addService(greetingServiceImpl).build();
 
-        rpcServer.start(result -> {
-            if (result.succeeded()) {
-                logger.info("Start Greeting RPC is successful.");
+        new AsyncResultSingle<Void>(handler -> {
+            rpcServer.start(handler);
+        }).flatMap(handler -> {
+            logger.info("Start Greeting RPC is successful.");
+            ServiceOptions options = new ServiceOptions()
+                    .setName(RPC_SERVER_NAME)
+                    .setAddress(getGrpcHost())
+                    .setPort(getGrpcPort());
 
-                // @TODO with rx
-                consulClient.registerService(
-                        new ServiceOptions()
-                                .setName(RPC_SERVER_NAME)
-                                .setAddress(getGrpcHost())
-                                .setPort(getGrpcPort()),
-                        consulResult -> {
-                            if (consulResult.succeeded()) {
-                                logger.info(String.format("Registered Greeting Server to Consul with name: %s", RPC_SERVER_NAME));
-                            } else {
-                                logger.info(consulResult.cause().getMessage(), consulResult.cause());
-                            }
-                        });
-            } else {
-                logger.fatal(result.cause().getMessage(), result.cause());
-            }
+            return new AsyncResultSingle<Void>(s -> {
+                consulClient.registerService(options, s);
+            });
+        }).subscribe(result -> {
+            logger.info(String.format("Registered Greeting Service to Consul with name: [%s]", RPC_SERVER_NAME));
+        }, error -> {
+            logger.fatal(error);
         });
     }
 
@@ -83,17 +77,18 @@ public class ServerVerticle extends BaseVerticle {
 
         if (!rpcServer.isShutdown()) {
             logger.info("Shutting down rpc service.");
-            rpcServer.shutdown(result -> {
-                if (result.succeeded()) {
-                    logger.info("Deregistering rpc service from Consul.");
-                    consulClient.deregisterService(RPC_SERVER_NAME, v -> {
-                        // do nothing.
+            new AsyncResultSingle<Void>(handler -> {
+                rpcServer.shutdown(handler);
+            })
+                    .flatMap(handler -> new AsyncResultSingle<Void>(s -> {
+                        consulClient.deregisterService(RPC_SERVER_NAME, s);
+                    }))
+                    .subscribe(result -> {
+                        logger.info("Deregistering rpc service from Consul.");
+                        consulClient.close();
+                    }, error -> {
+                        logger.info("Close Consul server connect.");
                     });
-                }
-
-                logger.info("Close Consul server connect.");
-                consulClient.close();
-            });
         }
     }
 }

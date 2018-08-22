@@ -37,7 +37,7 @@ public class ConsumerVerticle extends BaseVerticle {
     }
 
     /**
-     * 发送和返回 PRC 消息
+     * 发送和返回 RPC 消息
      *
      * @param host String
      * @param port int
