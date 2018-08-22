@@ -79,16 +79,14 @@ public class ServerVerticle extends BaseVerticle {
             logger.info("Shutting down rpc service.");
             new AsyncResultSingle<Void>(handler -> {
                 rpcServer.shutdown(handler);
-            })
-                    .flatMap(handler -> new AsyncResultSingle<Void>(s -> {
-                        consulClient.deregisterService(RPC_SERVER_NAME, s);
-                    }))
-                    .subscribe(result -> {
-                        logger.info("Deregistering rpc service from Consul.");
-                        consulClient.close();
-                    }, error -> {
-                        logger.info("Close Consul server connect.");
-                    });
+            }).flatMap(handler -> new AsyncResultSingle<Void>(s -> {
+                consulClient.deregisterService(RPC_SERVER_NAME, s);
+            })).subscribe(result -> {
+                logger.info("Deregistering rpc service from Consul.");
+                consulClient.close();
+            }, error -> {
+                logger.info("Close Consul server connect.");
+            });
         }
     }
 }
