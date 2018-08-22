@@ -19,11 +19,11 @@
 2. [Vert.x](https://vertx.io/)
 3. [gRPC](https://grpc.io/)
 
-其中，Consul 用作服务发现以及配置统一，每个 Vert.x 的 `BaseVerticle` 都扩展了使用 Consul 服务发现的能力，同时 gPRC 用作节点之间的 RPC 通讯。
+其中，Consul 用作服务发现以及配置统一，每个 Vert.x 的 `BaseVerticle` 都扩展了使用 Consul 服务发现的能力，同时 gRPC 用作节点之间的 RPC 通讯。
 
 ![sequence.png](asserts/sequence.png)
 
-在本脚手架的例子中，分别使用了两个 Verticle 支撑了三者的链路关系。`ServerVerticle` 实现了 PRC 的服务端，同时广播给 Consul 对应自己的地址和端口。`ConsumerVerticle` 从 Consul 获得 `ServerVerticle` 注册 RPC 服务并调用输出。
+在本脚手架的例子中，分别使用了两个 Verticle 支撑了三者的链路关系。`ServerVerticle` 实现了 RPC 的服务端，同时广播给 Consul 对应自己的地址和端口。`ConsumerVerticle` 从 Consul 获得 `ServerVerticle` 注册 RPC 服务并调用输出。
 
 ## 使用说明
 

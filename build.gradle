@@ -4,8 +4,10 @@
  * This generated file contains a sample Java project to get you started.
  * For more details take a look at the Java Quickstart chapter in the Gradle
  * user guide available at https://docs.gradle.org/3.4.1/userguide/tutorial_java_projects.html
+ *
+ * gradle init --type java-application --test-framework spock
+ *
  */
-
 
 allprojects {
     // Apply the java plugin to add support for Java
@@ -37,11 +39,9 @@ allprojects {
     }
 }
 
-
 jacocoTestReport {
     reports {
-        xml.enabled true
-        html.enabled false
+        html.setEnabled(true)
     }
 }
 

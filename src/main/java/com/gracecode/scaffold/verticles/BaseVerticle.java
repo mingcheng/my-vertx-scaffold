@@ -54,8 +54,7 @@ abstract class BaseVerticle extends AbstractVerticle {
                     }
                 }, error -> {
                     logger.fatal(error.getMessage(), error);
-                })
-                .dispose();
+                });
     }
 
     @Override
