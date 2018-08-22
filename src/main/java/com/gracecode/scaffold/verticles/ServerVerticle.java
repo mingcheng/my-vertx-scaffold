@@ -50,13 +50,14 @@ public class ServerVerticle extends BaseVerticle {
     public void start(Future<Void> startFuture) throws Exception {
         super.start(startFuture);
 
-        rpcServer = VertxServerBuilder.forAddress(vertx, getGrpcHost(), getGrpcPort())
+        rpcServer = VertxServerBuilder.forAddress(getVertx(), getGrpcHost(), getGrpcPort())
                 .addService(greetingServiceImpl).build();
 
         rpcServer.start(result -> {
             if (result.succeeded()) {
                 logger.info("Start Greeting RPC is successful.");
 
+                // @TODO with rx
                 consulClient.registerService(
                         new ServiceOptions()
                                 .setName(RPC_SERVER_NAME)

@@ -32,7 +32,7 @@ class DeployVerticleSpec extends Specification {
                 assert response.succeeded()
             }
 
-            vertx.setTimer(2l, {
+            vertx.setTimer(5l, {
                 vertx.undeploy(response.result()) { undeployResponse ->
                     conditions.evaluate {
                         assert undeployResponse.succeeded()
@@ -46,7 +46,7 @@ class DeployVerticleSpec extends Specification {
                 assert response.succeeded()
             }
 
-            vertx.setTimer(1l, {
+            vertx.setTimer(5l, {
                 vertx.undeploy(response.result()) { undeployResponse ->
                     conditions.evaluate {
                         assert undeployResponse.succeeded()
@@ -55,7 +55,7 @@ class DeployVerticleSpec extends Specification {
             })
         }
 
-        conditions.await(5d)
+        conditions.await(10d)
     }
 
     def cleanup() {

@@ -1,17 +1,22 @@
 package com.gracecode.scaffold.verticles;
 
-import io.vertx.core.AbstractVerticle;
 import io.vertx.core.Context;
 import io.vertx.core.Future;
 import io.vertx.core.Vertx;
 import io.vertx.core.json.JsonObject;
 import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
-import io.vertx.ext.consul.ConsulClient;
 import io.vertx.ext.consul.ConsulClientOptions;
+import io.vertx.reactivex.core.AbstractVerticle;
+import io.vertx.reactivex.ext.consul.ConsulClient;
+
 
 abstract class BaseVerticle extends AbstractVerticle {
     private static final String KEY_DEBUG = "debug";
+
+    protected io.vertx.reactivex.core.Vertx getRxVertx() {
+        return this.vertx;
+    }
 
     /**
      * 配置字段，参见 application.json
@@ -38,20 +43,19 @@ abstract class BaseVerticle extends AbstractVerticle {
             logger.isDebugEnabled();
         }
 
-
         ConsulClientOptions options = new ConsulClientOptions()
                 .setHost(getConsulHost()).setPort(getConsulPort());
 
-        consulClient = ConsulClient.create(vertx, options);
-        if (isDebugMode()) {
-            consulClient.agentInfo(result -> {
-                if (result.failed()) {
-                    logger.fatal(result.cause().getMessage(), result.cause());
-                }
-
-                //logger.info(result.result());
-            });
-        }
+        consulClient = ConsulClient.create(this.vertx, options);
+        consulClient.rxAgentInfo()
+                .subscribe(result -> {
+                    if (isDebugMode()) {
+                        logger.info(result);
+                    }
+                }, error -> {
+                    logger.fatal(error.getMessage(), error);
+                })
+                .dispose();
     }
 
     @Override
