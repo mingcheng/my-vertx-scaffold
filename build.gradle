@@ -32,6 +32,7 @@ allprojects {
 
     // In this section you declare where to find the dependencies of your project
     repositories {
+        maven { url 'http://maven.aliyun.com/nexus/content/groups/public/' }
         mavenLocal()
         mavenCentral()
         jcenter()
@@ -49,11 +50,12 @@ check.dependsOn jacocoTestReport
 
 buildscript {
     repositories {
+        maven { url 'http://maven.aliyun.com/nexus/content/groups/public/' }
         mavenCentral()
     }
 
     dependencies {
-        classpath 'com.google.protobuf:protobuf-gradle-plugin:0.8.0'
+        classpath 'com.google.protobuf:protobuf-gradle-plugin:0.8.6'
     }
 }
 
@@ -85,7 +87,7 @@ dependencies {
     compile 'com.google.guava:guava:26.0-jre'
 
     compile "io.vertx:vertx-lang-groovy:${vertxVersion}"
-    testCompile (
+    testCompile(
             'junit:junit:4.12',
             // Use the latest Groovy version for Spock testing
             'org.codehaus.groovy:groovy-all:2.4.7',
@@ -114,6 +116,9 @@ protobuf {
     }
 
     plugins {
+        lite {
+            artifact = "com.google.protobuf:protoc-gen-javalite:3.0.0"
+        }
         grpc {
 //            artifact = "io.grpc:protoc-gen-grpc-java:${grpcVersion}"
             artifact = "io.vertx:protoc-gen-grpc-java:${grpcVersion}"
