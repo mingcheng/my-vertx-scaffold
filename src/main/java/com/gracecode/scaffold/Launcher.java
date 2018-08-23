@@ -2,6 +2,9 @@ package com.gracecode.scaffold;
 
 import com.google.common.base.Charsets;
 import com.google.common.io.Resources;
+import io.reactivex.Observable;
+import io.reactivex.Single;
+import io.reactivex.functions.Action;
 import io.vertx.core.DeploymentOptions;
 import io.vertx.core.json.DecodeException;
 import io.vertx.core.json.JsonObject;
@@ -27,14 +30,16 @@ public class Launcher extends io.vertx.core.Launcher {
     public void beforeDeployingVerticle(DeploymentOptions deploymentOptions) {
         super.beforeDeployingVerticle(deploymentOptions);
 
-        try {
-            Optional.of(deploymentOptions.getConfig());
-        } catch (NullPointerException e) {
-            logger.info("Default deployment configure is empty, initialize.");
-            deploymentOptions.setConfig(new JsonObject());
-        }
-
-        deploymentOptions.getConfig().mergeIn(getConfiguration());
+        Observable.just(deploymentOptions.getConfig())
+                .subscribe(json -> {
+                    logger.info("Default configure is " + json.toString());
+                }, error -> {
+                    logger.warn("Default deployment configure is empty, initialize.");
+                    deploymentOptions.setConfig(new JsonObject());
+                }, () -> {
+                    logger.info("Merge configure from json file.");
+                    deploymentOptions.getConfig().mergeIn(getConfiguration());
+                });
     }
 
 
