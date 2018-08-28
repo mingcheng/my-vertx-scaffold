@@ -27,7 +27,7 @@ class DeployVerticleSpec extends Specification {
         assert options.getConfig().containsKey("debug")
         assert options.getConfig().containsKey("services")
 
-        vertx.deployVerticle("com.gracecode.scaffold.verticles.ServerVerticle", options) { response ->
+        vertx.deployVerticle("com.gracecode.scaffold.verticle.ServerVerticle", options) { response ->
             conditions.evaluate {
                 assert response.succeeded()
             }
@@ -41,7 +41,7 @@ class DeployVerticleSpec extends Specification {
             })
         }
 
-        vertx.deployVerticle("com.gracecode.scaffold.verticles.ConsumerVerticle", options) { response ->
+        vertx.deployVerticle("com.gracecode.scaffold.verticle.ConsumerVerticle", options) { response ->
             conditions.evaluate {
                 assert response.succeeded()
             }

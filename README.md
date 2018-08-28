@@ -18,6 +18,8 @@
 1. [Consul](https://www.consul.io/)
 2. [Vert.x](https://vertx.io/)
 3. [gRPC](https://grpc.io/)
+4. [Dagger2](https://github.com/google/dagger)
+5. [Reactive Java](https://reactivex.io)
 
 其中，Consul 用作服务发现以及配置统一，每个 Vert.x 的 `BaseVerticle` 都扩展了使用 Consul 服务发现的能力，同时 gRPC 用作节点之间的 RPC 通讯。
 
@@ -45,10 +47,10 @@
 
 ```
 java -jar build/libs/my-vertx-scaffold-1.0.0-SNAPSHOT.jar \
-    run com.gracecode.scaffold.verticles.ServerVerticle
+    run com.gracecode.scaffold.verticle.ServerVerticle
 
 java -jar build/libs/my-vertx-scaffold-1.0.0-SNAPSHOT.jar  \
-    run com.gracecode.scaffold.verticles.ConsumerVerticle
+    run com.gracecode.scaffold.verticle.ConsumerVerticle
 ```
 
 ![consumer.png](asserts/consumer.png)
@@ -61,10 +63,19 @@ java -jar build/libs/my-vertx-scaffold-1.0.0-SNAPSHOT.jar  \
 
 在 `DeployVerticleSpec.groovy` 可以看到如何使用 Spock 进行 Vert.x 部署以及下线 Verticle 的测试。
 
-## 思考思路
 
-待完善
+## 技术选型思路
 
-## @TODO
+### Why Vert.x & Reactive
 
-待完善
+Vert.x 是个很好的异步调用库，同时也非常适合在微服务中使用。相比传统的 Spring 框架，它的主要优点是在于多语言支持和异步调用（虽然 Spring 也有对应的 WebFlux）。配合 Reactive Java，在 Vert.x 中能够写出很简单清晰的代码。
+
+### Why Grpc
+
+Vert.x 和 Grpc 的配合能够夸平台以及多语言开发使用，对于不同背景的技术团队能够很好的配合以及提高开发效率（但同比学习曲线想对比较高）。
+
+### Why Dagger2
+
+ 对比 Spring 的 Ioc，Dagger2 有着更好的性能优势，同时也弥补了 Vert.x 在 Ioc 这块的短板。
+
+ Vert.x 中 Verticle 的 Context 以及生命周期想对比较简单，因此配合 Dagger2 使用注入更为方便和简洁。
