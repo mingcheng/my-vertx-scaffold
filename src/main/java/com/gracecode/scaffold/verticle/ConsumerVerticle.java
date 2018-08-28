@@ -1,4 +1,4 @@
-package com.gracecode.scaffold.verticles;
+package com.gracecode.scaffold.verticle;
 
 import com.gracecode.scaffold.Greet;
 import com.gracecode.scaffold.GreetingServiceGrpc;

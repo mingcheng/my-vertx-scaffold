@@ -45,10 +45,10 @@
 
 ```
 java -jar build/libs/my-vertx-scaffold-1.0.0-SNAPSHOT.jar \
-    run com.gracecode.scaffold.verticles.ServerVerticle
+    run com.gracecode.scaffold.verticle.ServerVerticle
 
 java -jar build/libs/my-vertx-scaffold-1.0.0-SNAPSHOT.jar  \
-    run com.gracecode.scaffold.verticles.ConsumerVerticle
+    run com.gracecode.scaffold.verticle.ConsumerVerticle
 ```
 
 ![consumer.png](asserts/consumer.png)

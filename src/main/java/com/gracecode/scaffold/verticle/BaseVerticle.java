@@ -1,22 +1,21 @@
-package com.gracecode.scaffold.verticles;
+package com.gracecode.scaffold.verticle;
 
+import com.gracecode.scaffold.component.DaggerBaseVerticleComponent;
+import com.gracecode.scaffold.module.BaseVerticleModule;
 import io.vertx.core.Context;
 import io.vertx.core.Future;
 import io.vertx.core.Vertx;
 import io.vertx.core.json.JsonObject;
 import io.vertx.core.logging.Logger;
-import io.vertx.core.logging.LoggerFactory;
 import io.vertx.ext.consul.ConsulClientOptions;
 import io.vertx.reactivex.core.AbstractVerticle;
 import io.vertx.reactivex.ext.consul.ConsulClient;
 
+import javax.inject.Inject;
 
-abstract class BaseVerticle extends AbstractVerticle {
+
+public abstract class BaseVerticle extends AbstractVerticle {
     private static final String KEY_DEBUG = "debug";
-
-    protected io.vertx.reactivex.core.Vertx getRxVertx() {
-        return this.vertx;
-    }
 
     /**
      * 配置字段，参见 application.json
@@ -28,7 +27,8 @@ abstract class BaseVerticle extends AbstractVerticle {
     private static final String KEY_GREETING = "greeting";
     static final String RPC_SERVER_NAME = ServerVerticle.class.getSimpleName();
 
-    Logger logger = LoggerFactory.getLogger(getClass().getName());
+    @Inject
+    Logger logger;
 
     /**
      * Consul Service
@@ -39,6 +39,11 @@ abstract class BaseVerticle extends AbstractVerticle {
     @Override
     public void init(Vertx vertx, Context context) {
         super.init(vertx, context);
+
+        DaggerBaseVerticleComponent.builder()
+                .baseVerticleModule(new BaseVerticleModule(this))
+                .build().inject(this);
+
         if (isDebugMode()) {
             logger.isDebugEnabled();
         }
@@ -107,5 +112,9 @@ abstract class BaseVerticle extends AbstractVerticle {
 
     private JsonObject getConsulConfig() {
         return getServicesConfig().getJsonObject(KEY_CONSUL);
+    }
+
+    public io.vertx.reactivex.core.Vertx getRxVertx() {
+        return vertx;
     }
 }

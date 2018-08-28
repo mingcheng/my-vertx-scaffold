@@ -1,9 +1,8 @@
-package com.gracecode.scaffold.verticles;
+package com.gracecode.scaffold.verticle;
 
 import com.gracecode.scaffold.Greet;
 import com.gracecode.scaffold.GreetingServiceGrpc;
 import com.gracecode.scaffold.Person;
-import io.reactivex.Single;
 import io.vertx.core.Context;
 import io.vertx.core.Future;
 import io.vertx.core.Vertx;
