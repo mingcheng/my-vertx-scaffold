@@ -25,7 +25,8 @@ public class ConsumerVerticle extends BaseVerticle {
                 .flatMap(result -> {
                     if (result.getList().isEmpty()) {
                         return Single.error(
-                                new Throwable(String.format("Not found %s address on Consul.", GrpcServiceImpl.RPC_SERVER_NAME))
+                                new Throwable(String.format("Not found %s address on Consul.",
+                                        GrpcServiceImpl.RPC_SERVER_NAME))
                         );
                     } else {
                         // Only get the first record.
@@ -36,11 +37,14 @@ public class ConsumerVerticle extends BaseVerticle {
                     logger.info(String.format(
                             "Get %s Service from Consul with address/port %s:%d",
                             GrpcServiceImpl.RPC_SERVER_NAME, service.getAddress(), service.getPort()));
-                    bindGrpc(service.getAddress(), service.getPort());
-                }, error -> {
-                    logger.error(error.getMessage(), error);
-                });
+
+                    // Greet to rpc server for test every 2sec.
+                    vertx.setPeriodic(2000, handler -> {
+                        greetFromRpcServer(service.getAddress(), service.getPort());
+                    });
+                }, logger::fatal);
     }
+
 
     /**
      * 发送和返回 RPC 消息
@@ -48,7 +52,7 @@ public class ConsumerVerticle extends BaseVerticle {
      * @param host String
      * @param port int
      */
-    private void bindGrpc(String host, int port) {
+    private void greetFromRpcServer(String host, int port) {
         new AsyncResultSingle<Greet>(handler -> {
             ManagedChannel rpcChannel = VertxChannelBuilder
                     .forAddress(getVertx(), host, port)
@@ -57,16 +61,18 @@ public class ConsumerVerticle extends BaseVerticle {
 
             GreetingServiceGrpc.GreetingServiceVertxStub stub = GreetingServiceGrpc.newVertxStub(rpcChannel);
 
+            // A person with random age
             Person person = Person.newBuilder()
-                    .setName(getClass().getName())
-                    .setAge(new Random().nextInt())
+                    .setName(getClass().getSimpleName())
+                    .setAge(new Random().nextInt(100))
                     .build();
 
+            // Greet from rpc server
             stub.greet(person, handler);
         }).subscribe(p -> {
             logger.info(p.getMessage());
         }, error -> {
-            logger.error(error);
+            logger.fatal(error);
         });
     }
 }

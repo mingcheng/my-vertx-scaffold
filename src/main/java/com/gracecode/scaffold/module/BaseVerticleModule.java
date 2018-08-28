@@ -32,26 +32,26 @@ public class BaseVerticleModule {
     }
 
     @Provides
-    Logger getLogger() {
+    Logger provideLogger() {
         return LoggerFactory.getLogger(verticle.getClass().getSimpleName());
     }
 
     @Provides
-    io.vertx.reactivex.core.Vertx getRxVertx() {
+    io.vertx.reactivex.core.Vertx provideRxVertx() {
         return verticle.getRxVertx();
     }
 
     @Provides
-    Vertx getVertx() {
+    Vertx provideVertx() {
         return verticle.getVertx();
     }
 
     @Provides
-    ConsulClient getConsulClient() {
+    ConsulClient provideConsulClient() {
         ConsulClientOptions options = new ConsulClientOptions()
                 .setHost(getConsulHost()).setPort(getConsulPort());
 
-        return ConsulClient.create(getRxVertx(), options);
+        return ConsulClient.create(provideRxVertx(), options);
     }
 
     String getConsulHost() {

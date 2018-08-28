@@ -17,11 +17,14 @@ import javax.inject.Inject;
 public abstract class BaseVerticle extends AbstractVerticle {
     private static final String KEY_DEBUG = "debug";
 
+    /**
+     * Logger from Vertx's own logger
+     */
     @Inject
     Logger logger;
 
     /**
-     * Consul Service
+     * Consul Service Injected By Dagger2
      */
     @Inject
     ConsulClient consulClient;
@@ -34,10 +37,6 @@ public abstract class BaseVerticle extends AbstractVerticle {
         DaggerBaseVerticleComponent.builder()
                 .baseVerticleModule(new BaseVerticleModule(this))
                 .build().inject(this);
-
-        if (isDebugMode()) {
-            logger.isDebugEnabled();
-        }
     }
 
 
@@ -69,19 +68,19 @@ public abstract class BaseVerticle extends AbstractVerticle {
     public void start(Future<Void> startFuture) throws Exception {
         super.start(startFuture);
 
+        // 初始化成功以后，获取 Consul 的状态
         consulClient.rxAgentInfo()
                 .subscribe(result -> {
                     if (isDebugMode()) {
                         logger.info(result);
                     }
-                }, error -> {
-                    logger.fatal(error.getMessage(), error);
-                });
+                }, logger::fatal);
     }
 
 
     @Override
     public void stop(Future<Void> stopFuture) throws Exception {
         super.stop(stopFuture);
+        consulClient.close();
     }
 }

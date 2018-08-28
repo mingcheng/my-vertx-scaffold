@@ -19,12 +19,12 @@ public class ServerVerticleModule extends BaseVerticleModule {
     }
 
     @Provides
-    GrpcServer getGrpcServer(GrpcServiceImpl service) {
+    GrpcServer provideGrpcServer(GrpcServiceImpl service) {
         return new GrpcServer(vertcile, service);
     }
 
     @Provides
-    GrpcServiceImpl getGrpcServiceImpl() {
+    GrpcServiceImpl provideGrpcServiceImpl() {
         return new GrpcServiceImpl();
     }
 }

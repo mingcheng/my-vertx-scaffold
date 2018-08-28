@@ -19,7 +19,6 @@ public class ServerVerticle extends BaseVerticle {
     /**
      * gRPC 引用，使用了 Vertx 的封装
      */
-
     @Inject
     GrpcServer rpcServer;
 
@@ -27,6 +26,7 @@ public class ServerVerticle extends BaseVerticle {
     public void init(Vertx vertx, Context context) {
         super.init(vertx, context);
 
+        // Start Dagger2 inject by component.
         DaggerServiceVerticleComponent.builder()
                 .serverVerticleModule(new ServerVerticleModule(this))
                 .build()
