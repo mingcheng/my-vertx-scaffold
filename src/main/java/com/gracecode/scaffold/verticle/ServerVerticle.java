@@ -1,5 +1,7 @@
 package com.gracecode.scaffold.verticle;
 
+import com.gracecode.scaffold.component.DaggerServiceVerticleComponent;
+import com.gracecode.scaffold.module.ServerVerticleModule;
 import com.gracecode.scaffold.service.GrpcServer;
 import com.gracecode.scaffold.service.impl.GrpcServiceImpl;
 import io.vertx.core.Context;
@@ -24,6 +26,11 @@ public class ServerVerticle extends BaseVerticle {
     @Override
     public void init(Vertx vertx, Context context) {
         super.init(vertx, context);
+
+        DaggerServiceVerticleComponent.builder()
+                .serverVerticleModule(new ServerVerticleModule(this))
+                .build()
+                .inject(this);
 
         if (isDebugMode()) {
             logger.info("Initialize ServerVerticle with debug mode.");
