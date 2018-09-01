@@ -1,6 +1,6 @@
-# 基于 Vert.x 的简单脚手架
+# 基于 Vert.x 的简单响应式脚手架
 
-[![Build Status](https://travis-ci.org/feelinglucky/my-vertx-scaffold.java.svg?branch=master)](https://travis-ci.org/feelinglucky/my-vertx-scaffold.java)
+[![Build Status](https://travis-ci.org/mingcheng/my-vertx-scaffold.java.svg?branch=master)](https://travis-ci.org/mingcheng/my-vertx-scaffold.java)
 
 在搭建微服务的过程中，免不了会使用多个技术栈融合以及选型，这是个比较漫长的过程。架构应该更关注于业务的本身，同时又没有时间去关注过多的技术细节，所以就会有脚手架这东西。
 
@@ -66,16 +66,14 @@ java -jar build/libs/my-vertx-scaffold-1.0.0-SNAPSHOT.jar  \
 
 ## 技术选型思路
 
-### Why Vert.x & Reactive
+### Vert.x & Reactive
 
 Vert.x 是个很好的异步调用库，同时也非常适合在微服务中使用。相比传统的 Spring 框架，它的主要优点是在于多语言支持和异步调用（虽然 Spring 也有对应的 WebFlux）。配合 Reactive Java，在 Vert.x 中能够写出很简单清晰的代码。
 
-### Why Grpc
+### gRPC
 
 Vert.x 和 Grpc 的配合能够夸平台以及多语言开发使用，对于不同背景的技术团队能够很好的配合以及提高开发效率（但同比学习曲线想对比较高）。
 
-### Why Dagger2
+### Dagger2
 
- 对比 Spring 的 Ioc，Dagger2 有着更好的性能优势，同时也弥补了 Vert.x 在 Ioc 这块的短板。
-
- Vert.x 中 Verticle 的 Context 以及生命周期想对比较简单，因此配合 Dagger2 使用注入更为方便和简洁。
+对比 Spring 的 IoC，Dagger2 有着更好的性能、同时也更便于掌握 IoC 的注入过程和方式，同时也弥补了 Vert.x 在 Ioc 这块的短板。Vert.x 中 Verticle 的 Context 以及生命周期想对比较简单，因此配合 Dagger2 使用注入更为方便和简洁。
