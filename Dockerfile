@@ -11,7 +11,7 @@ WORKDIR /home/gradle/project
 RUN gradle clean jar
 
 # Stage 2 (to create a downsized "container executable", ~87MB)
-FROM java:8-jre-alpine
+FROM ibmjava:8-sfj-alpine
 WORKDIR /home/gradle/project
 COPY --from=builder /home/gradle/project/build/libs/*.jar .
 

@@ -7,9 +7,12 @@ import com.gracecode.scaffold.service.impl.GrpcServiceImpl;
 import io.grpc.ManagedChannel;
 import io.reactivex.Single;
 import io.vertx.core.Future;
+import io.vertx.ext.consul.Service;
 import io.vertx.grpc.VertxChannelBuilder;
 import io.vertx.reactivex.core.impl.AsyncResultSingle;
 
+import java.util.List;
+import java.util.Optional;
 import java.util.Random;
 
 /**
@@ -23,14 +26,11 @@ public class ConsumerVerticle extends BaseVerticle {
 
         consulClient.rxCatalogServiceNodes(GrpcServiceImpl.RPC_SERVER_NAME)
                 .flatMap(result -> {
-                    if (result.getList().isEmpty()) {
-                        return Single.error(
-                                new Throwable(String.format("Not found %s address on Consul.",
-                                        GrpcServiceImpl.RPC_SERVER_NAME))
-                        );
+                    Optional<List<Service>> possible = Optional.ofNullable(result.getList());
+                    if (possible.isPresent() && !possible.get().isEmpty()) {
+                        return Single.just(possible.get().get(0));
                     } else {
-                        // Only get the first record.
-                        return Single.just(result.getList().get(0));
+                        return Single.error(new Throwable("Server not found for get error."));
                     }
                 })
                 .subscribe(service -> {

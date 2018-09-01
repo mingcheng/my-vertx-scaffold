@@ -2,7 +2,7 @@ package com.gracecode.scaffold.verticle;
 
 import com.gracecode.scaffold.component.DaggerServiceVerticleComponent;
 import com.gracecode.scaffold.module.ServerVerticleModule;
-import com.gracecode.scaffold.service.GrpcServer;
+import com.gracecode.scaffold.service.GrpcService;
 import com.gracecode.scaffold.service.impl.GrpcServiceImpl;
 import io.vertx.core.Context;
 import io.vertx.core.Future;
@@ -20,7 +20,7 @@ public class ServerVerticle extends BaseVerticle {
      * gRPC 引用，使用了 Vertx 的封装
      */
     @Inject
-    GrpcServer rpcServer;
+    GrpcService rpcServer;
 
     @Override
     public void init(Vertx vertx, Context context) {
