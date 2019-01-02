@@ -6,5 +6,5 @@ import dagger.Component;
 
 @Component(modules = BaseVerticleModule.class)
 public interface BaseVerticleComponent {
-    void inject(BaseVerticle verticle);
+  void inject(BaseVerticle verticle);
 }

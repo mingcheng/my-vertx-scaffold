@@ -12,72 +12,84 @@ import io.vertx.reactivex.impl.AsyncResultSingle;
 
 import javax.inject.Inject;
 
-/**
- * @author mingcheng
- */
+/** @author mingcheng */
 public class ServerVerticle extends BaseVerticle {
-    /**
-     * gRPC 引用，使用了 Vertx 的封装
-     */
-    @Inject
-    GrpcService rpcServer;
+  /** gRPC 引用，使用了 Vertx 的封装 */
+  @Inject GrpcService rpcServer;
 
-    @Override
-    public void init(Vertx vertx, Context context) {
-        super.init(vertx, context);
+  @Override
+  public void init(Vertx vertx, Context context) {
+    super.init(vertx, context);
 
-        // Start Dagger2 inject by component.
-        DaggerServiceVerticleComponent.builder()
-                .serverVerticleModule(new ServerVerticleModule(this))
-                .build()
-                .inject(this);
+    // Start Dagger2 inject by component.
+    DaggerServiceVerticleComponent.builder()
+        .serverVerticleModule(new ServerVerticleModule(this))
+        .build()
+        .inject(this);
 
-        if (isDebugMode()) {
-            logger.info("Initialize ServerVerticle with debug mode.");
-        }
+    if (isDebugMode()) {
+      logger.info("Initialize ServerVerticle with debug mode.");
     }
+  }
 
-    @Override
-    public void start(Future<Void> startFuture) throws Exception {
-        super.start(startFuture);
+  @Override
+  public void start(Future<Void> startFuture) throws Exception {
+    super.start(startFuture);
 
-        new AsyncResultSingle<Void>(handler -> {
-            rpcServer.start(handler);
-        }).flatMap(handler -> {
-            logger.info("Start Greeting RPC is successful.");
-            ServiceOptions options = new ServiceOptions()
-                    .setName(GrpcServiceImpl.RPC_SERVER_NAME)
-                    .setAddress(rpcServer.getGrpcHost())
-                    .setPort(rpcServer.getGrpcPort());
+    new AsyncResultSingle<Void>(
+            handler -> {
+              rpcServer.start(handler);
+            })
+        .flatMap(
+            handler -> {
+              logger.info("Start Greeting RPC is successful.");
+              ServiceOptions options =
+                  new ServiceOptions()
+                      .setName(GrpcServiceImpl.RPC_SERVER_NAME)
+                      .setAddress(rpcServer.getGrpcHost())
+                      .setPort(rpcServer.getGrpcPort());
 
-            return new AsyncResultSingle<Void>(s -> {
-                consulClient.registerService(options, s);
+              return new AsyncResultSingle<Void>(
+                  s -> {
+                    consulClient.registerService(options, s);
+                  });
+            })
+        .subscribe(
+            result -> {
+              logger.info(
+                  String.format(
+                      "Registered Greeting Service to Consul with name: [%s]",
+                      GrpcServiceImpl.RPC_SERVER_NAME));
+            },
+            error -> {
+              logger.fatal(error);
             });
-        }).subscribe(result -> {
-            logger.info(String.format("Registered Greeting Service to Consul with name: [%s]",
-                    GrpcServiceImpl.RPC_SERVER_NAME));
-        }, error -> {
-            logger.fatal(error);
-        });
-    }
+  }
 
+  @Override
+  public void stop(Future<Void> stopFuture) throws Exception {
+    super.stop(stopFuture);
 
-    @Override
-    public void stop(Future<Void> stopFuture) throws Exception {
-        super.stop(stopFuture);
-
-        if (!rpcServer.isShutdown()) {
-            logger.info("Shutting down rpc service.");
-            new AsyncResultSingle<Void>(handler -> {
+    if (!rpcServer.isShutdown()) {
+      logger.info("Shutting down rpc service.");
+      new AsyncResultSingle<Void>(
+              handler -> {
                 rpcServer.shutdown(handler);
-            }).flatMap(handler -> new AsyncResultSingle<Void>(s -> {
-                consulClient.deregisterService(GrpcServiceImpl.RPC_SERVER_NAME, s);
-            })).subscribe(result -> {
+              })
+          .flatMap(
+              handler ->
+                  new AsyncResultSingle<Void>(
+                      s -> {
+                        consulClient.deregisterService(GrpcServiceImpl.RPC_SERVER_NAME, s);
+                      }))
+          .subscribe(
+              result -> {
                 logger.info("Deregistering rpc service from Consul.");
                 consulClient.close();
-            }, error -> {
+              },
+              error -> {
                 logger.info("Close Consul server connect.");
-            });
-        }
+              });
     }
+  }
 }

@@ -6,25 +6,23 @@ import com.gracecode.scaffold.verticle.ServerVerticle;
 import dagger.Module;
 import dagger.Provides;
 
-/**
- * @author mingcheng
- */
+/** @author mingcheng */
 @Module
 public class ServerVerticleModule extends BaseVerticleModule {
-    private final ServerVerticle vertcile;
+  private final ServerVerticle vertcile;
 
-    public ServerVerticleModule(ServerVerticle verticle) {
-        super(verticle);
-        this.vertcile = verticle;
-    }
+  public ServerVerticleModule(ServerVerticle verticle) {
+    super(verticle);
+    this.vertcile = verticle;
+  }
 
-    @Provides
-    GrpcService provideGrpcServer(GrpcServiceImpl service) {
-        return new GrpcService(vertcile, service);
-    }
+  @Provides
+  GrpcService provideGrpcServer(GrpcServiceImpl service) {
+    return new GrpcService(vertcile, service);
+  }
 
-    @Provides
-    GrpcServiceImpl provideGrpcServiceImpl() {
-        return new GrpcServiceImpl();
-    }
+  @Provides
+  GrpcServiceImpl provideGrpcServiceImpl() {
+    return new GrpcServiceImpl();
+  }
 }
