@@ -1,6 +1,6 @@
 package com.gracecode.scaffold.module;
 
-import com.gracecode.scaffold.service.GrpcServer;
+import com.gracecode.scaffold.service.GrpcService;
 import com.gracecode.scaffold.service.impl.GrpcServiceImpl;
 import com.gracecode.scaffold.verticle.ServerVerticle;
 import dagger.Module;
@@ -19,8 +19,8 @@ public class ServerVerticleModule extends BaseVerticleModule {
     }
 
     @Provides
-    GrpcServer provideGrpcServer(GrpcServiceImpl service) {
-        return new GrpcServer(vertcile, service);
+    GrpcService provideGrpcServer(GrpcServiceImpl service) {
+        return new GrpcService(vertcile, service);
     }
 
     @Provides

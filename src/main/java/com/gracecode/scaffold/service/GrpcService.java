@@ -11,7 +11,7 @@ import io.vertx.grpc.VertxServerBuilder;
 /**
  * @author mingcheng
  */
-public class GrpcServer {
+public class GrpcService {
     private static final String KEY_GREETING = "greeting";
 
     static final String KEY_HOST = "host";
@@ -37,7 +37,7 @@ public class GrpcServer {
         return getGrpcConfig().getString(KEY_HOST);
     }
 
-    public GrpcServer(BaseVerticle verticle, GrpcServiceImpl service) {
+    public GrpcService(BaseVerticle verticle, GrpcServiceImpl service) {
         this.verticle = verticle;
         this.vertxServer = VertxServerBuilder.forAddress(verticle.getVertx(), getGrpcHost(), getGrpcPort())
                 .addService(service).build();
