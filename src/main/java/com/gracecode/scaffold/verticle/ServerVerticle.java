@@ -8,7 +8,7 @@ import io.vertx.core.Context;
 import io.vertx.core.Future;
 import io.vertx.core.Vertx;
 import io.vertx.ext.consul.ServiceOptions;
-import io.vertx.reactivex.core.impl.AsyncResultSingle;
+import io.vertx.reactivex.impl.AsyncResultSingle;
 
 import javax.inject.Inject;
 

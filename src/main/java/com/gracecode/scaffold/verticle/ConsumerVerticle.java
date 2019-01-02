@@ -9,7 +9,7 @@ import io.reactivex.Single;
 import io.vertx.core.Future;
 import io.vertx.ext.consul.Service;
 import io.vertx.grpc.VertxChannelBuilder;
-import io.vertx.reactivex.core.impl.AsyncResultSingle;
+import io.vertx.reactivex.impl.AsyncResultSingle;
 
 import java.util.List;
 import java.util.Optional;
