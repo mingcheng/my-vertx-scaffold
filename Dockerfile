@@ -2,7 +2,7 @@
 
 # Stage 1 (to create a "build" image, ~140MB)
 FROM gradle:3.4.1-jdk8 AS builder
-LABEL maintainer "hzmingcheng@corp.netease.comm"
+LABEL maintainer="Ming Chen<hzmingcheng@corp.netease.com>"
 
 USER root
 RUN gradle -v
