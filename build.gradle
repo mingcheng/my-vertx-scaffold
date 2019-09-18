@@ -10,151 +10,152 @@
  */
 
 allprojects {
-    // Apply the java plugin to add support for Java
-    apply plugin: 'java'
+  // Apply the java plugin to add support for Java
+  apply plugin: 'java'
 
-    // Apply the application plugin to add support for building an application
-    apply plugin: 'application'
+  // Apply the application plugin to add support for building an application
+  apply plugin: 'application'
 
-    // Apply the groovy plugin to also add support for Groovy (needed for Spock)
-    apply plugin: 'groovy'
+  // Apply the groovy plugin to also add support for Groovy (needed for Spock)
+  apply plugin: 'groovy'
 
-    // for generate protobuf files for gPRC
-    apply plugin: 'com.google.protobuf'
+  // for generate protobuf files for gPRC
+  apply plugin: 'com.google.protobuf'
 
-    // for IDEA
-    apply plugin: 'idea'
+  // for IDEA
+  apply plugin: 'idea'
 
-    // @see https://github.com/codecov/example-gradle/blob/master/build.gradle
-    apply plugin: 'jacoco'
+  // @see https://github.com/codecov/example-gradle/blob/master/build.gradle
+  apply plugin: 'jacoco'
 
-    // Add plugin https://plugins.gradle.org/plugin/net.ltgt.apt
-    apply plugin: "net.ltgt.apt"
-    apply plugin: 'net.ltgt.apt-idea'
+  // Add plugin https://plugins.gradle.org/plugin/net.ltgt.apt
+  apply plugin: "net.ltgt.apt"
+  apply plugin: 'net.ltgt.apt-idea'
 
-    // for Java8
-    sourceCompatibility = JavaVersion.VERSION_1_8
+  // for Java8
+  sourceCompatibility = JavaVersion.VERSION_11
 
-    // In this section you declare where to find the dependencies of your project
-    repositories {
-        maven { url 'http://maven.aliyun.com/nexus/content/groups/public/' }
-        mavenLocal()
-        mavenCentral()
-        jcenter()
-        maven { url "http://repo1.maven.org/maven2/" }
-        maven { url "https://plugins.gradle.org/m2/" }
-    }
+  // In this section you declare where to find the dependencies of your project
+  repositories {
+    maven { url 'http://maven.aliyun.com/nexus/content/groups/public/' }
+    mavenLocal()
+    mavenCentral()
+    jcenter()
+    maven { url "http://repo1.maven.org/maven2/" }
+    maven { url "https://plugins.gradle.org/m2/" }
+  }
 }
 
 
 buildscript {
-    repositories {
-        maven { url 'http://maven.aliyun.com/nexus/content/groups/public/' }
-        maven { url "https://plugins.gradle.org/m2/" }
-        mavenCentral()
-    }
+  repositories {
+    maven { url 'http://maven.aliyun.com/nexus/content/groups/public/' }
+    maven { url "https://plugins.gradle.org/m2/" }
+    mavenCentral()
+  }
 
-    dependencies {
-        classpath 'com.google.protobuf:protobuf-gradle-plugin:0.8.7'
-        classpath "net.ltgt.gradle:gradle-apt-plugin:0.18"
-    }
+  dependencies {
+    classpath 'com.google.protobuf:protobuf-gradle-plugin:0.8.10'
+    classpath "net.ltgt.gradle:gradle-apt-plugin:0.18"
+  }
 }
 
 jacocoTestReport {
-    reports {
-        html.setEnabled(true)
-    }
+  reports {
+    html.setEnabled(true)
+  }
 }
 
 check.dependsOn jacocoTestReport
 
 // Define main librarie's version
 ext {
-    vertxVersion = '3.6.2'
-    grpcVersion = '1.17.1'
-    daggerVersion = '2.20'
+  vertxVersion = '3.8.1'
+  grpcVersion = '1.23.0'
+  daggerVersion = '2.24'
 }
 
 // Define application's dependencies.
 dependencies {
-    // for Vert.x toolkit
-    compile "io.vertx:vertx-unit:${vertxVersion}"
-    compile "io.vertx:vertx-core:${vertxVersion}"
-    compile "io.vertx:vertx-config:${vertxVersion}"
-    compile "io.vertx:vertx-rx-java2:${vertxVersion}"
-    compile "io.vertx:vertx-web:${vertxVersion}"
-    compile "io.vertx:vertx-web-client:${vertxVersion}"
-    compile "io.vertx:vertx-consul-client:${vertxVersion}"
-    compile "io.vertx:vertx-redis-client:${vertxVersion}"
+  // for Vert.x toolkit
+  compile "io.vertx:vertx-unit:${vertxVersion}"
+  compile "io.vertx:vertx-core:${vertxVersion}"
+  compile "io.vertx:vertx-config:${vertxVersion}"
+  compile "io.vertx:vertx-rx-java2:${vertxVersion}"
+  compile "io.vertx:vertx-web:${vertxVersion}"
+  compile "io.vertx:vertx-web-client:${vertxVersion}"
+  compile "io.vertx:vertx-consul-client:${vertxVersion}"
+  compile "io.vertx:vertx-redis-client:${vertxVersion}"
 
-    // for gPRC library
-    compile "io.grpc:grpc-netty:${grpcVersion}"
-    compile "io.grpc:grpc-protobuf:${grpcVersion}"
-    compile "io.grpc:grpc-stub:${grpcVersion}"
-    compile "io.vertx:vertx-grpc:${vertxVersion}"
+  // for gPRC library
+  compile "io.grpc:grpc-netty:${grpcVersion}"
+  compile "io.grpc:grpc-protobuf:${grpcVersion}"
+  compile "io.grpc:grpc-stub:${grpcVersion}"
+  compile "io.vertx:vertx-grpc:${vertxVersion}"
 
-    // This dependency is found on compile classpath of this component and consumers.
-    compile 'com.google.guava:guava:26.0-jre'
-    compile "com.google.dagger:dagger:${daggerVersion}"
+  // This dependency is found on compile classpath of this component and consumers.
+  compile 'com.google.guava:guava:26.0-jre'
+  compile "com.google.dagger:dagger:${daggerVersion}"
+  compile 'javax.annotation:javax.annotation-api:1.3.2'
 
-    annotationProcessor "com.google.dagger:dagger-compiler:${daggerVersion}"
-    compile "io.vertx:vertx-lang-groovy:${vertxVersion}"
-    testCompile(
-            'junit:junit:4.12',
-            // Use the latest Groovy version for Spock testing
-            'org.codehaus.groovy:groovy-all:2.4.7',
-            // Use the awesome Spock testing and specification framework even with Java
-            'org.spockframework:spock-core:1.0-groovy-2.4'
-    )
+  annotationProcessor "com.google.dagger:dagger-compiler:${daggerVersion}"
+  compile "io.vertx:vertx-lang-groovy:${vertxVersion}"
+  testCompile(
+    'junit:junit:4.12',
+    // Use the latest Groovy version for Spock testing
+    'org.codehaus.groovy:groovy-all:2.4.7',
+    // Use the awesome Spock testing and specification framework even with Java
+    'org.spockframework:spock-core:1.0-groovy-2.4'
+  )
 }
 
 // @see https://github.com/jrthe42/grpc-service-demo/blob/master/build.gradle
 idea {
-    project {
-        configureAnnotationProcessing = true
-    }
+  project {
+    configureAnnotationProcessing = true
+  }
 
-    module {
-        // Not using generatedSourceDirs because of
-        // https://discuss.gradle.org/t/support-for-intellij-2016/15294/8
-        sourceDirs += file("${projectDir}/build/generated/source/proto/main/java")
-        sourceDirs += file("${projectDir}/build/generated/source/proto/main/grpc")
+  module {
+    // Not using generatedSourceDirs because of
+    // https://discuss.gradle.org/t/support-for-intellij-2016/15294/8
+    sourceDirs += file("${projectDir}/build/generated/source/proto/main/java")
+    sourceDirs += file("${projectDir}/build/generated/source/proto/main/grpc")
 
-        apt {
-            addGeneratedSourcesDirs = true
-            addAptDependencies = true
-        }
+    apt {
+      addGeneratedSourcesDirs = true
+      addAptDependencies = true
     }
+  }
 }
 
 // protobuf plugin configure
 protobuf {
-    protoc {
-        // The version of protoc must match protobuf-java. If you don't depend on
-        // protobuf-java directly, you will be transitively depending on the
-        // protobuf-java version that grpc depends on.
-        artifact = 'com.google.protobuf:protoc:3.0.0'
-    }
+  protoc {
+    // The version of protoc must match protobuf-java. If you don't depend on
+    // protobuf-java directly, you will be transitively depending on the
+    // protobuf-java version that grpc depends on.
+    artifact = 'com.google.protobuf:protoc:3.0.0'
+  }
 
-    plugins {
-        lite {
-            artifact = "com.google.protobuf:protoc-gen-javalite:3.0.0"
-        }
-        grpc {
+  plugins {
+    lite {
+      artifact = "com.google.protobuf:protoc-gen-javalite:3.0.0"
+    }
+    grpc {
 //            artifact = "io.grpc:protoc-gen-grpc-java:${grpcVersion}"
-            artifact = "io.vertx:protoc-gen-grpc-java:1.16.1"
-        }
+      artifact = "io.vertx:protoc-gen-grpc-java:1.16.1"
     }
+  }
 
-    generateProtoTasks {
-        all()*.plugins {
-            grpc {
-                // To generate deprecated interfaces and static bindService method,
-                // turn the enable_deprecated option to true below:
-                option 'enable_deprecated=false'
-            }
-        }
+  generateProtoTasks {
+    all()*.plugins {
+      grpc {
+        // To generate deprecated interfaces and static bindService method,
+        // turn the enable_deprecated option to true below:
+        option 'enable_deprecated=false'
+      }
     }
+  }
 }
 
 // Define the main class for the application
@@ -162,15 +163,15 @@ mainClassName = 'com.gracecode.scaffold.Launcher'
 version = '1.0.0-SNAPSHOT'
 
 jar {
-    manifest {
-        attributes(
-                'Implementation-Title': "${mainClassName}",
-                'Implementation-Version': "${version}",
-                'Class-Path': configurations.compile.collect { it.getName() }.join(' '),
-                'Main-Class': "${mainClassName}"
+  manifest {
+    attributes(
+      'Implementation-Title': "${mainClassName}",
+      'Implementation-Version': "${archiveVersion}",
+      'Class-Path': configurations.compile.collect { it.getName() }.join(' '),
+      'Main-Class': "${mainClassName}"
 //            'Main-Verticle': "<Your Main Verticle Here>"
-        )
-    }
+    )
+  }
 
-    from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
+  from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
 }
